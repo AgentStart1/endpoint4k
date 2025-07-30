@@ -187,3 +187,9 @@ suspend fun RoutingContext.handleCaughtException(e: Exception) {
         }
     }
 }
+
+context(route: RoutingContext)
+@Suppress("UnusedReceiverParameter")
+suspend inline fun <reified Resp, reified Body> AbstractMutationApi<Resp, Body>.receiveBody(): Body {
+    return route.call.receive()
+}
