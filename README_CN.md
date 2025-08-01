@@ -2,18 +2,18 @@
 
 [![](https://jitpack.io/v/storytellerF/route4k.svg)](https://jitpack.io/#storytellerF/route4k)
 
-`route4k` is a type-safe routing library for [Ktor](https://ktor.io/). It allows you to share API definitions between your server and client, simplifying the development of web applications and reducing runtime errors caused by API mismatches.
+`route4k` 是一个为 [Ktor](https://ktor.io/) 设计的类型安全路由库。它允许您在服务器和客户端之间共享 API 定义，从而简化 Web 应用程序的开发，减少因 API 不匹配而导致的运行时错误。
 
-## Features
+## 特性
 
-- **Type-Safe**: Catch routing errors at compile time, not at runtime.
-- **Code Sharing**: Share API definitions between your Ktor server and client.
-- **Concise Syntax**: Utilizes Kotlin's features, like extension functions and the `invoke` operator, to provide a clean and expressive API.
-- **Comprehensive Support**: Supports path parameters, query parameters, request bodies, and common HTTP methods (GET, POST, PUT, PATCH, DELETE).
+- **类型安全**: 在编译时捕捉路由错误，而不是在运行时。
+- **代码共享**: 在 Ktor 服务器和客户端之间共享 API 定义。
+- **简洁的语法**: 使用 Kotlin 的特性（如扩展函数和`invoke`操作符）来提供清晰、富有表现力的 API。
+- **全面的支持**: 支持路径参数（Path）、查询参数（Query）、请求体（Body）以及常见的 HTTP 方法 (GET, POST, PUT, PATCH, DELETE)。
 
-## Installation
+## 安装
 
-First, add the JitPack repository to your root `build.gradle.kts` or `settings.gradle.kts` file:
+首先，将 JitPack 仓库添加到您的根 `build.gradle.kts` 或 `settings.gradle.kts` 文件中：
 
 ```kotlin
 // settings.gradle.kts
@@ -25,7 +25,7 @@ dependencyResolutionManagement {
 }
 ```
 
-Then, add the following dependencies to your module's `build.gradle.kts` file:
+然后，将以下依赖项添加到您的模块 `build.gradle.kts` 文件中：
 
 ```kotlin
 val route4kVersion = "1.0-SNAPSHOT"
@@ -39,32 +39,32 @@ implementation("com.github.storytellerF.route4k:ktor-server:$route4kVersion")
 implementation("com.github.storytellerF.route4k:ktor-client:$route4kVersion")
 ```
 
-## Usage Example
+## 使用示例
 
-Here is a complete example demonstrating how to define an API, implement it on the server, and call it from the client.
+下面是一个完整的示例，演示了如何定义 API、在服务器上实现它以及在客户端上调用它。
 
-### 1. Define the Shared API
+### 1. 定义共享 API
 
-First, define your API endpoints in a shared module (e.g., `commonMain`). This includes data classes and the API routes themselves.
+首先，在一个共享模块中（例如 `commonMain`）定义您的 API 端点。这包括数据类和 API 路由本身。
 
 ```kotlin
 import com.storyteller_f.route4k.common.*
 import kotlinx.serialization.Serializable
 
-// --- Data Transfer Objects (DTOs) ---
+// --- 数据传输对象 (DTOs) ---
 @Serializable
 data class User(val id: Long, val name: String)
 
 @Serializable
-data class UserPath(val id: Long) // For path parameter /users/{id}
+data class UserPath(val id: Long) // 用于路径参数 /users/{id}
 
 @Serializable
-data class UserQuery(val name: String) // For query parameter ?name=...
+data class UserQuery(val name: String) // 用于查询参数 ?name=...
 
 @Serializable
-data class CreateUserRequest(val name: String) // For the request body
+data class CreateUserRequest(val name: String) // 用于请求体
 
-// --- API Definition ---
+// --- API 定义 ---
 object UserApi {
     // GET /users/{id}?name=...
     val getUser = safeApiWithQueryAndPath<User, UserQuery, UserPath>("/users/{id}")
@@ -74,37 +74,37 @@ object UserApi {
 }
 ```
 
-### 2. Server-Side Implementation
+### 2. 服务器端实现
 
-On your Ktor server, use the `invoke` operator to implement your defined API.
+在您的 Ktor 服务器上，使用 `invoke` 操作符来实现您定义的 API。
 
 ```kotlin
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import com.storyteller_f.route4k.ktor.server.invoke // Import route4k's server-side extensions
+import com.storyteller_f.route4k.ktor.server.invoke // 导入 route4k 的服务器端扩展
 import com.storyteller_f.route4k.ktor.server.receiveBody
 
 fun Application.configureRouting() {
     routing {
-        // Implement GET /users/{id}?name=...
+        // 实现 GET /users/{id}?name=...
         UserApi.getUser.invoke({ result ->
-            // Handle the result, success or failure
+            // 处理结果，成功或失败
             result.onSuccess { user ->
                 if (user != null) call.respond(user) else call.respond(HttpStatusCode.NotFound)
             }.onFailure {
                 call.respond(HttpStatusCode.InternalServerError, it.message ?: "Error")
             }
         }) { query, path ->
-            // Business logic
+            // 业务逻辑
             // query: UserQuery, path: UserPath
             runCatching {
-                // Example: return a user whose name includes query and path info
+                // 示例：返回一个用户，其名字包含查询和路径信息
                 User(path.id, "Found user: ${query.name} with ID ${path.id}")
             }
         }
 
-        // Implement POST /users
+        // 实现 POST /users
         UserApi.createUser.invoke({ result ->
             result.onSuccess { user ->
                 if (user != null) call.respond(HttpStatusCode.Created, user) else call.respond(HttpStatusCode.BadRequest)
@@ -112,10 +112,10 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.InternalServerError, it.message ?: "Error")
             }
         }) { api ->
-            // Business logic
+            // 业务逻辑
             runCatching {
                 val request = with(api) { receiveBody<CreateUserRequest>() }
-                // Example: create a new user
+                // 示例：创建一个新用户
                 User(id = System.currentTimeMillis(), name = request.name)
             }
         }
@@ -123,35 +123,35 @@ fun Application.configureRouting() {
 }
 ```
 
-### 3. Client-Side Call
+### 3. 客户端调用
 
-In your Ktor client, also use the `invoke` operator to safely call the API.
+在您的 Ktor 客户端，同样使用 `invoke` 操作符来安全地调用 API。
 
 ```kotlin
 import io.ktor.client.*
-import com.storyteller_f.route4k.ktor.client.invoke as invokeClient // Use an alias to avoid conflicts
+import com.storyteller_f.route4k.ktor.client.invoke as invokeClient // 使用别名避免冲突
 
 suspend fun main() {
     val client = HttpClient {
-        // ... client configuration, e.g., JSON serialization
+        // ... 客户端配置，例如 JSON 序列化
     }
 
-    // Call GET /users/123?name=John
+    // 调用 GET /users/123?name=John
     val user = UserApi.getUser.invokeClient(
         query = UserQuery("John"),
         path = UserPath(123L)
     )
     println("Fetched User: $user")
 
-    // Call POST /users
+    // 调用 POST /users
     val newUser = UserApi.createUser.invokeClient(
         body = CreateUserRequest("Jane Doe")
     ) {
-        // You can add extra request configuration here
+        // 可以进行额外的请求配置
         contentType(ContentType.Application.Json)
     }
     println("Created User: $newUser")
 }
 ```
 
-In this way, `route4k` ensures that the API calls between the server and client are consistent and type-safe in terms of parameters, paths, and return types.
+通过这种方式，`route4k` 确保了服务器和客户端之间的 API 调用在参数、路径和返回类型上都是一致和类型安全的。
