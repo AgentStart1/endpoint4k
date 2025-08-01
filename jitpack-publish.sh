@@ -1,0 +1,1 @@
+./gradlew publishToMavenLocal -Pversion=1.0.0 -Pgroup=com.github.storytellerF.route4k

@@ -1,10 +1,7 @@
 plugins {
     kotlin("jvm") version "2.1.21"
-    `maven-publish`
+    id("common-publish")
 }
-
-group = "com.storyteller_f.route4k"
-version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":common"))
@@ -19,12 +16,5 @@ kotlin {
     jvmToolchain(21)
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
-    }
-}
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-        }
     }
 }

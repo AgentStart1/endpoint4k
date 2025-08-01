@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencyResolutionManagement {
+    includeBuild("common-publish")
     @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
