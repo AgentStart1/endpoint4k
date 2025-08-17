@@ -129,7 +129,7 @@ fun Application.configureRouting() {
 
 ```kotlin
 import io.ktor.client.*
-import com.storyteller_f.route4k.ktor.client.invoke as invokeClient // 使用别名避免冲突
+import com.storyteller_f.route4k.ktor.client.invoke
 
 suspend fun main() {
     val client = HttpClient {
@@ -137,14 +137,14 @@ suspend fun main() {
     }
 
     // 调用 GET /users/123?name=John
-    val user = UserApi.getUser.invokeClient(
+    val user = UserApi.getUser.invoke(
         query = UserQuery("John"),
         path = UserPath(123L)
     )
     println("Fetched User: $user")
 
     // 调用 POST /users
-    val newUser = UserApi.createUser.invokeClient(
+    val newUser = UserApi.createUser.invoke(
         body = CreateUserRequest("Jane Doe")
     ) {
         // 可以进行额外的请求配置

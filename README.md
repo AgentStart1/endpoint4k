@@ -129,7 +129,7 @@ In your Ktor client, also use the `invoke` operator to safely call the API.
 
 ```kotlin
 import io.ktor.client.*
-import com.storyteller_f.route4k.ktor.client.invoke as invokeClient // Use an alias to avoid conflicts
+import com.storyteller_f.route4k.ktor.client.invoke
 
 suspend fun main() {
     val client = HttpClient {
@@ -137,14 +137,14 @@ suspend fun main() {
     }
 
     // Call GET /users/123?name=John
-    val user = UserApi.getUser.invokeClient(
+    val user = UserApi.getUser.invoke(
         query = UserQuery("John"),
         path = UserPath(123L)
     )
     println("Fetched User: $user")
 
     // Call POST /users
-    val newUser = UserApi.createUser.invokeClient(
+    val newUser = UserApi.createUser.invoke(
         body = CreateUserRequest("Jane Doe")
     ) {
         // You can add extra request configuration here
