@@ -21,6 +21,8 @@ jobs:
           cache: 'gradle'
 
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
       - run: chmod +x gradlew
 

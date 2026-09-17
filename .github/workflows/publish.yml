@@ -18,6 +18,8 @@ jobs:
           cache: 'gradle'
 
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
       - name: Extract version from tag
         run: |
