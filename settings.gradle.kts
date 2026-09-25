@@ -1,11 +1,6 @@
 pluginManagement {
     repositories {
         mavenCentral()
-        maven("https://mirrors.tencent.com/nexus/repository/maven-public/") {
-            content {
-
-            }
-        }
         google()
         mavenLocal()
         gradlePluginPortal()
@@ -19,11 +14,6 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
-        maven("https://mirrors.tencent.com/nexus/repository/maven-public/") {
-            content {
-
-            }
-        }
         google()
         mavenLocal()
         gradlePluginPortal()
