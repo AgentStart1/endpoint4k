@@ -1,31 +1,21 @@
 pluginManagement {
     repositories {
-        maven("https://mirrors.tencent.com/nexus/repository/maven-public/") {
-            content {
-
-            }
-        }
+        mavenCentral()
         google()
         mavenLocal()
-        mavenCentral()
         gradlePluginPortal()
     }
 }
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
-        maven("https://mirrors.tencent.com/nexus/repository/maven-public/") {
-            content {
-
-            }
-        }
+        mavenCentral()
         google()
         mavenLocal()
-        mavenCentral()
         gradlePluginPortal()
     }
 }

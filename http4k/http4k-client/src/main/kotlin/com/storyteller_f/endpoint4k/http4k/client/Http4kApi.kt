@@ -22,7 +22,7 @@ internal val JsonCodec: Json = Json { ignoreUnknownKeys = true }
 
 // -------------------- Safe APIs --------------------
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 @Suppress("NOTHING_TO_INLINE")
 suspend inline operator fun <reified R : Any> SafeEndpoint<R>.invoke(): R {
@@ -32,7 +32,7 @@ suspend inline operator fun <reified R : Any> SafeEndpoint<R>.invoke(): R {
     }
 }
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, Q : Any> SafeEndpointWithQuery<R, Q>.invoke(query: Q): R {
     return with(route) {
@@ -42,7 +42,7 @@ suspend inline operator fun <reified R : Any, Q : Any> SafeEndpointWithQuery<R, 
     }
 }
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, Q : Any, P : Any> SafeEndpointWithQueryAndPath<R, Q, P>.invoke(
     query: Q,
@@ -56,7 +56,7 @@ suspend inline operator fun <reified R : Any, Q : Any, P : Any> SafeEndpointWith
     }
 }
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, P : Any> SafeEndpointWithPath<R, P>.invoke(path: P): R {
     val newUrlString = buildPathUrlString(path, pathClass, urlString)
@@ -68,7 +68,7 @@ suspend inline operator fun <reified R : Any, P : Any> SafeEndpointWithPath<R, P
 
 // -------------------- Mutation APIs --------------------
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, reified B : Any> MutationEndpoint<R, B>.invoke(
     body: B,
@@ -80,7 +80,7 @@ suspend inline operator fun <reified R : Any, reified B : Any> MutationEndpoint<
     }
 }
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, reified B : Any, Q : Any> MutationEndpointWithQuery<R, B, Q>.invoke(
     query: Q,
@@ -94,7 +94,7 @@ suspend inline operator fun <reified R : Any, reified B : Any, Q : Any> Mutation
     }
 }
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, reified B : Any, Q : Any, P : Any>
         MutationEndpointWithQueryAndPath<R, B, Q, P>.invoke(
@@ -111,7 +111,7 @@ suspend inline operator fun <reified R : Any, reified B : Any, Q : Any, P : Any>
     }
 }
 
-context(route: HttpHandler)
+context(noinline route: HttpHandler)
 @OptIn(InternalSerializationApi::class)
 suspend inline operator fun <reified R : Any, reified B : Any, P : Any> MutationEndpointWithPath<R, B, P>.invoke(
     path: P,
