@@ -23,7 +23,7 @@ internal interface SimpleParameters {
 
 internal class QueryParameters(private val request: Request) : SimpleParameters {
     override fun get(name: String): String? = request.query(name)
-    override fun getAll(name: String): List<String>? = request.queries(name)?.filterNotNull()
+    override fun getAll(name: String): List<String> = request.queries(name).filterNotNull()
 }
 
 internal class PathParameters(private val request: Request) : SimpleParameters {

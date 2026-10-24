@@ -176,7 +176,7 @@ internal suspend inline fun <reified R : Any> OkHttpClient.requestAndDecode(requ
             check(it.isSuccessful) {
                 "HTTP ${'$'}{it.code}: ${'$'}{it.message}"
             }
-            val body = it.body?.string() ?: ""
+            val body = it.body.string()
             @Suppress("UNCHECKED_CAST")
             when (R::class) {
                 String::class -> body as R
