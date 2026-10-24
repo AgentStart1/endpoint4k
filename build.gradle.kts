@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.detekt)
 }
 
-val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
+val detektReportMergeSarif = tasks.register<ReportMergeTask>("detektReportMergeSarif") {
     output = layout.buildDirectory.file("reports/detekt/merge.sarif")
 }
 subprojects {
@@ -70,7 +70,7 @@ subprojects {
         dependsOn("detekt")
     }
 
-    detektReportMergeSarif {
+    detektReportMergeSarif.configure {
         input.from(
             tasks.withType<Detekt>().map { it.sarifReportFile })
     }

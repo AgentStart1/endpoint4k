@@ -13,6 +13,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.http4k.core.HttpHandler
+import org.http4k.core.Method
+import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.routes
@@ -31,6 +33,43 @@ class Http4kRouteTest {
 
     @Serializable
     data class CommonObject(val name: String)
+
+    @Serializable
+    data class ListQuery(val names: List<String>)
+
+    private fun decodeNames(uri: String): List<String> {
+        val api = safeEndpointWithQueryBuilder("/names") {
+            resp(ListQuery::class)
+            query(ListQuery::class)
+        }
+        val handler: HttpHandler = routes(
+            api.serverInvoke(handleResult = { _, result ->
+                result.fold(
+                    onSuccess = { Response(Status.OK).body(Json.encodeToString(it)) },
+                    onFailure = { throw it }
+                )
+            }) { _, query -> Result.success(query) }
+        )
+
+        val response = handler(Request(Method.GET, uri))
+        assertEquals(Status.OK, response.status)
+        return Json.decodeFromString<ListQuery>(response.bodyString()).names
+    }
+
+    @Test
+    fun `test repeated query values preserve order and omit valueless entries`() {
+        assertEquals(listOf("first", "second"), decodeNames("/names?names=first&names&names=second"))
+    }
+
+    @Test
+    fun `test absent list query decodes as empty list`() {
+        assertEquals(emptyList(), decodeNames("/names"))
+    }
+
+    @Test
+    fun `test valueless list query decodes as empty list`() {
+        assertEquals(emptyList(), decodeNames("/names?names"))
+    }
 
     @Test
     fun `test get route`() = runBlocking {

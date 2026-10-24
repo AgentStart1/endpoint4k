@@ -49,6 +49,36 @@ class OkHttpRouteTest {
     @Serializable
     data class CommonObject(val name: String)
 
+    @Test
+    fun `test string response body`() = runBlocking {
+        server.enqueue(MockResponse().setBody("hello"))
+        val api = safeEndpointBuilder<String>("$baseUrl/text") { resp(String::class) }
+
+        val result = with(client) { api.invoke2() }
+
+        assertEquals("hello", result)
+    }
+
+    @Test
+    fun `test empty string response body`() = runBlocking {
+        server.enqueue(MockResponse().setResponseCode(204))
+        val api = safeEndpointBuilder<String>("$baseUrl/empty") { resp(String::class) }
+
+        val result = with(client) { api.invoke2() }
+
+        assertEquals("", result)
+    }
+
+    @Test
+    fun `test unit response body`() = runBlocking {
+        server.enqueue(MockResponse().setResponseCode(204))
+        val api = safeEndpointBuilder<Unit>("$baseUrl/empty") { resp(Unit::class) }
+
+        val result = with(client) { api.invoke2() }
+
+        assertEquals(Unit, result)
+    }
+
     private fun installDispatcher() {
         val dispatcher = object : Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse {
