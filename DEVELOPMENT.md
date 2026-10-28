@@ -3,6 +3,34 @@
 Use JDK 21 and the checked-in Gradle wrapper. Android targets also require an
 Android SDK with platform 36. On Windows, use `gradlew.bat` instead of `./gradlew`.
 
+## CI Gradle cache
+
+The Test workflow runs `./gradlew check` for relevant changes on main and in pull
+requests. It can also be dispatched manually for cache verification. Test and
+Publish use `gradle/actions/setup-gradle@v6` with `cache-provider: enhanced` and
+the checked-in wrapper; Java setup only installs JDK 21. Only Test runs on main
+write caches. PRs and tag publications restore caches read-only. Cache warming
+does not publish artifacts or require publishing credentials.
+
+To evaluate [issue #13](https://github.com/storytellerF/endpoint4k/issues/13):
+
+1. Record a cold main Test run's URL, commit, cache restore/save results, check
+   step duration and total job duration. Confirm the post-job cache save succeeds.
+2. Dispatch Test on main again, then open a fresh PR based on that main commit.
+   Confirm both restore compatible entries in the setup-gradle job summary and
+   logs. A fallback restore is useful even without an exact commit-key hit.
+3. Record the same timings for the warm main and fresh PR runs. Over a
+   representative period, record successful restores / attempted restores and
+   sum the added main job durations (runner minutes), including cache overhead.
+   Compare PR time saved with that added compute cost before deciding to retain
+   main cache production.
+4. Confirm `check` passes and inspect the next normal release's Publish run for
+   cache restoration and successful signed publication. Do not create a release
+   solely to warm or measure the cache.
+
+Keep run links and measurements in the issue. Local workflow validation cannot
+establish GitHub cache reuse, publish credentials, or net runtime savings.
+
 ## Query decoding and response reading
 
 Run `./gradlew :http4k:test :okhttp:test --warning-mode all` to exercise the

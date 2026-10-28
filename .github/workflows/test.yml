@@ -1,12 +1,31 @@
 name: Test
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.kt'
+      - '**/*.kts'
+      - '**/gradle.properties'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - 'config/**'
+      - '.github/workflows/test.yml'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
       - '**/*.kt'
       - '**/*.kts'
+      - '**/gradle.properties'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - 'config/**'
       - '.github/workflows/test.yml'
+      - '.github/workflows/publish.yml'
 
 jobs:
   test:
@@ -18,7 +37,12 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: 'gradle'
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: enhanced
+          # Main produces the shared cache; fresh PRs only restore it.
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - uses: android-actions/setup-android@v4
         with:
