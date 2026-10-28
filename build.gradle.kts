@@ -30,8 +30,8 @@ subprojects {
         // Can lead to speedups in larger projects. `false` by default.
         parallel = true
 
-        // Auto-correct issues which can be fixed automatically. Remaining findings should fail the build.
-        autoCorrect = true
+        // Keep checks read-only; opt in to source changes with --auto-correct.
+        autoCorrect = false
         ignoreFailures = false
 
         // Use the shared detekt configuration
