@@ -3,6 +3,33 @@
 Use JDK 21 and the checked-in Gradle wrapper. Android targets also require an
 Android SDK with platform 36. On Windows, use `gradlew.bat` instead of `./gradlew`.
 
+## Static analysis (Detekt)
+
+Run `./gradlew detekt` for all modules, or
+`./gradlew :ktor:ktor-client:detekt` for one module. Ordinary Detekt checks are
+read-only (`autoCorrect = false`) and fail on findings, including fixable formatting
+violations. They can run alongside compilation and other read-only analysis.
+CI uses `./gradlew check` without source correction.
+
+To apply automatic fixes explicitly, run:
+
+```sh
+./gradlew detekt --auto-correct
+```
+
+The existing `excludeCorrectable: false` policy can make the correction run fail
+for findings it has just fixed; rerun Detekt after correction to verify the result.
+
+Do not overlap explicit auto-correction with compilation or analysis of the same
+sources. After correction, fix any remaining findings manually and rerun
+`./gradlew check` to verify analysis, compilation and tests. AST parallelism
+remains enabled; auto-correction does not require changing parallel or Worker API
+settings.
+
+Rules live in `config/detekt/detekt.yml`. XML, HTML, TXT, SARIF and Markdown reports
+are written to each module's `build/reports/detekt/`; merged SARIF is written to
+`build/reports/detekt/merge.sarif`.
+
 ## CI Gradle cache
 
 The Test workflow runs `./gradlew check` for relevant changes on main and in pull
