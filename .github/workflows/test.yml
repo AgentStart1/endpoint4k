@@ -41,6 +41,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
         with:
           cache-provider: enhanced
+          # Publish the shared cache from main; fresh PRs only restore it.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - uses: android-actions/setup-android@v4
