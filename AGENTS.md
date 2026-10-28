@@ -122,7 +122,7 @@ This guideline doesn’t assert live test results. Use the Commands section to r
 If anything becomes outdated (Kotlin, Ktor, OkHttp, http4k, or serialization versions), update the version in the affected `build.gradle.kts` files and re-run `./gradlew.bat build` to validate.
 
 ## Static Analysis (Detekt)
-Follow the [Detekt workflow in DEVELOPMENT.md](../../DEVELOPMENT.md#static-analysis-detekt).
+Follow the [Detekt workflow in DEVELOPMENT.md](DEVELOPMENT.md#static-analysis-detekt).
 Ordinary checks are read-only and may overlap compilation. Only explicit
 `--auto-correct` runs must be kept separate from compilation or analysis of the
 same sources; rerun checks after fixing sources.
