@@ -15,7 +15,11 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: 'gradle'
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: enhanced
+          cache-read-only: true
 
       - uses: android-actions/setup-android@v4
         with:
@@ -24,7 +28,7 @@ jobs:
       - name: Extract version from tag
         run: |
           VERSION="${GITHUB_REF#refs/tags/v}"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - run: chmod +x gradlew
 
